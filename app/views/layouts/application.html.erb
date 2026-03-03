@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= content_for(:title) || "RUBY — The Last Bagel You'll Ever Need" %></title>
+    <meta name="description" content="One location. One obsession. A billion people waiting. RUBY is not a bagel shop — it's a movement.">
+    <meta name="convex-url" content="<%= ENV.fetch('CONVEX_URL', '') %>">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  </head>
+
+  <body data-controller="reveal xp-system">
+    <%= yield %>
+  </body>
+</html>
