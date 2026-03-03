@@ -1,0 +1,23 @@
+<nav id="game-hud" data-controller="game-hud">
+  <div class="hud-left">
+    <div class="hud-logo">Ruby</div>
+    <div class="hud-xp-bar">
+      <span class="xp-label">XP</span>
+      <div class="xp-track">
+        <div class="xp-fill" data-game-hud-target="xpFill"></div>
+      </div>
+      <span class="xp-level" data-game-hud-target="xpLevel">Lv 1</span>
+    </div>
+  </div>
+  <div class="hud-right">
+    <div class="hud-streak" id="hud-streak">
+      <span>&#x1f525;</span>
+      <span data-game-hud-target="streakCount">1</span>
+      <span>day streak</span>
+    </div>
+    <button class="hud-cart" data-controller="cart" data-action="click->cart#open">
+      Cart
+      <span class="cart-count" data-cart-target="count">0</span>
+    </button>
+  </div>
+</nav>

@@ -1,0 +1,16 @@
+{
+  "name": "ruby-bagel-shop",
+  "private": true,
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+  },
+  "dependencies": {
+    "@convex-dev/auth": "^0.0.91",
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.23",
+    "convex": "^1.32.0",
+    "esbuild": "^0.27.3",
+    "tailwindcss": "^4.2.1"
+  }
+}

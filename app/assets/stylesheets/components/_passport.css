@@ -1,0 +1,225 @@
+/* ═══════════════════════════════════════════
+   SECTION 9 — BAGEL PASSPORT (Collection Game)
+   ═══════════════════════════════════════════ */
+
+#passport {
+  padding: var(--space-2xl) var(--gutter);
+}
+
+.passport-content {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.passport-card {
+  background: var(--ruby-dark);
+  border: 2px solid var(--ruby-gold);
+  padding: 3rem;
+  margin-top: var(--space-lg);
+  position: relative;
+}
+
+.passport-card::before {
+  content: 'RUBY BAGEL PASSPORT';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ruby-black);
+  padding: 0 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--ruby-gold);
+}
+
+.stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: var(--space-md);
+}
+
+.stamp {
+  aspect-ratio: 1;
+  border: 1px dashed rgba(200, 168, 110, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: all 0.5s ease;
+  position: relative;
+}
+
+.stamp.collected {
+  border-style: solid;
+  border-color: var(--ruby-gold);
+  background: rgba(200, 168, 110, 0.05);
+}
+
+.stamp.collected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(200, 168, 110, 0.1) 0%, transparent 70%);
+}
+
+.stamp-icon { font-size: 1.5rem; }
+.stamp-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(250, 246, 241, 0.5);
+}
+
+.stamp.locked {
+  opacity: 0.3;
+}
+
+.stamp.locked .stamp-icon { filter: grayscale(1); }
+
+.passport-progress {
+  margin-top: var(--space-md);
+  text-align: left;
+}
+
+.passport-progress-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ruby-gold);
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.passport-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--ruby-charcoal);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.passport-fill {
+  height: 100%;
+  width: 37.5%;
+  background: linear-gradient(90deg, var(--ruby-gold), var(--ruby-amber));
+  border-radius: 4px;
+  transition: width 1s var(--ease-out-expo);
+}
+
+/* Finale */
+#finale {
+  padding: var(--space-2xl) var(--gutter);
+  text-align: center;
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.finale-title {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--fs-statement);
+  font-weight: 900;
+  line-height: 1.1;
+  max-width: 800px;
+  margin-bottom: var(--space-md);
+}
+
+.finale-subtitle {
+  font-size: var(--fs-body);
+  color: rgba(250, 246, 241, 0.5);
+  max-width: 500px;
+  margin-bottom: var(--space-lg);
+  line-height: 1.7;
+}
+
+.finale-shopify-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 3rem;
+  background: linear-gradient(135deg, var(--ruby-gold), var(--ruby-amber));
+  color: var(--ruby-black);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-body);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.finale-shopify-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 20px 60px rgba(200, 168, 110, 0.3),
+    0 0 0 2px rgba(200, 168, 110, 0.3);
+}
+
+.finale-shopify-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 3s ease infinite;
+}
+
+/* Footer */
+#footer {
+  padding: var(--space-lg) var(--gutter);
+  border-top: 1px solid rgba(200, 168, 110, 0.1);
+}
+
+.footer-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: var(--ruby-gold);
+  letter-spacing: 0.1em;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(250, 246, 241, 0.4);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer-links a:hover { color: var(--ruby-gold); }
+
+.footer-legal {
+  font-size: var(--fs-micro);
+  color: rgba(250, 246, 241, 0.2);
+  margin-top: var(--space-md);
+  text-align: center;
+}

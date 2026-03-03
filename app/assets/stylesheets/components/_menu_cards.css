@@ -1,0 +1,279 @@
+/* ═══════════════════════════════════════════
+   NUMBERS, CRAFT, & MENU SECTIONS
+   ═══════════════════════════════════════════ */
+
+/* Numbers */
+#numbers {
+  padding: var(--space-xl) var(--gutter);
+  border-top: 1px solid rgba(200, 168, 110, 0.1);
+  border-bottom: 1px solid rgba(200, 168, 110, 0.1);
+}
+
+.numbers-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  text-align: center;
+}
+
+.stat-item {
+  padding: var(--space-md);
+}
+
+.stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 900;
+  color: var(--ruby-gold);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-number .counter {
+  display: inline-block;
+}
+
+.stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(250, 246, 241, 0.4);
+}
+
+/* Craft */
+#craft {
+  padding: var(--space-2xl) var(--gutter);
+}
+
+.craft-header {
+  max-width: var(--max-width);
+  margin: 0 auto var(--space-xl);
+  text-align: center;
+}
+
+.craft-timeline {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  position: relative;
+}
+
+.craft-timeline::before {
+  content: '';
+  position: absolute;
+  top: 60px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ruby-gold), var(--ruby-gold), transparent);
+  opacity: 0.3;
+}
+
+.craft-step {
+  text-align: center;
+  padding-top: var(--space-md);
+}
+
+.step-number {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--ruby-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-sm);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-small);
+  color: var(--ruby-gold);
+  background: var(--ruby-black);
+  position: relative;
+  z-index: 1;
+  transition: all 0.5s ease;
+}
+
+.craft-step:hover .step-number {
+  background: var(--ruby-gold);
+  color: var(--ruby-black);
+  box-shadow: 0 0 30px rgba(200, 168, 110, 0.3);
+}
+
+.step-time {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: var(--ruby-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+}
+
+.step-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.step-desc {
+  font-size: var(--fs-small);
+  color: rgba(250, 246, 241, 0.5);
+  line-height: 1.6;
+}
+
+/* Menu */
+#menu {
+  padding: var(--space-2xl) var(--gutter);
+  background: var(--ruby-dark);
+}
+
+.menu-header {
+  max-width: var(--max-width);
+  margin: 0 auto var(--space-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.menu-unlock-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: var(--ruby-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  animation: blink-hint 2s ease infinite;
+}
+
+.menu-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.menu-card {
+  background: var(--ruby-black);
+  border: 1px solid rgba(200, 168, 110, 0.1);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s var(--ease-out-expo);
+  cursor: pointer;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ruby-gold), var(--ruby-amber));
+  transform: scaleX(0);
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.menu-card:hover {
+  border-color: rgba(200, 168, 110, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.menu-card:hover::before {
+  transform: scaleX(1);
+}
+
+.menu-card-bagel {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.menu-card-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ruby-gold);
+  margin-bottom: 0.5rem;
+}
+
+.menu-card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.menu-card-desc {
+  font-size: var(--fs-small);
+  color: rgba(250, 246, 241, 0.5);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.menu-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-price {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.1rem;
+  color: var(--ruby-cream);
+}
+
+.menu-add-btn {
+  background: transparent;
+  border: 1px solid rgba(200, 168, 110, 0.3);
+  color: var(--ruby-gold);
+  padding: 0.4rem 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menu-add-btn:hover {
+  background: var(--ruby-gold);
+  color: var(--ruby-black);
+}
+
+/* Locked card state */
+.menu-card.locked {
+  opacity: 0.4;
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.menu-card.locked .lock-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 10, 0.7);
+  z-index: 2;
+  filter: none;
+  opacity: 1;
+}
+
+.lock-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.lock-text {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ruby-gold);
+}

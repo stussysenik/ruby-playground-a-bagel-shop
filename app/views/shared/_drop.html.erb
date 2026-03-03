@@ -1,0 +1,61 @@
+<section id="drop" data-controller="drop-timer">
+  <div class="drop-bg-glow"></div>
+  <div class="drop-content">
+    <div class="drop-visual reveal">
+      <div class="drop-badge">Limited</div>
+      <div class="css-bagel bagel-lg" style="
+        background: radial-gradient(circle at 40% 35%,
+          #f0d88a 0%,
+          #c8a257 15%,
+          #8b1a1a 40%,
+          #5a0f0f 70%,
+          #2d0808 100%
+        );
+        box-shadow:
+          inset 0 -8px 20px rgba(0,0,0,0.4),
+          inset 0 4px 15px rgba(240, 216, 138, 0.2),
+          0 20px 60px rgba(139, 26, 26, 0.4),
+          0 5px 20px rgba(90, 15, 15, 0.3),
+          0 0 80px rgba(194, 59, 34, 0.15);
+      "></div>
+    </div>
+
+    <div class="drop-info">
+      <div class="section-label reveal">Limited Edition</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        The <em>Ruby Red</em> Velvet
+      </h2>
+      <p class="story-text reveal reveal-delay-2">
+        Beetroot-infused dough. Aged gruy&egrave;re. Truffle honey drizzle.
+        <strong>Only 200 made per drop.</strong> When they're gone, they're gone.
+        Next drop won't happen for 90 days.
+      </p>
+
+      <div class="drop-timer reveal reveal-delay-3">
+        <div class="timer-block">
+          <div class="timer-value" data-drop-timer-target="hours">00</div>
+          <div class="timer-label">Hours</div>
+        </div>
+        <div class="timer-block">
+          <div class="timer-value" data-drop-timer-target="minutes">00</div>
+          <div class="timer-label">Min</div>
+        </div>
+        <div class="timer-block">
+          <div class="timer-value" data-drop-timer-target="seconds">00</div>
+          <div class="timer-label">Sec</div>
+        </div>
+      </div>
+
+      <div class="drop-remaining reveal reveal-delay-4">
+        <span data-drop-timer-target="remainingCount">47</span> / 200 remaining
+        <div class="remaining-bar">
+          <div class="remaining-fill" data-drop-timer-target="remainingFill"></div>
+        </div>
+      </div>
+
+      <button class="btn-primary reveal reveal-delay-4" data-action="click->cart#addItem" data-name="Ruby Red Velvet" data-price="28" style="margin-top:1rem;">
+        Secure Yours &mdash; $28 &rarr;
+      </button>
+    </div>
+  </div>
+</section>

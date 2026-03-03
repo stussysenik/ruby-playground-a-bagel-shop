@@ -1,0 +1,173 @@
+/* ═══════════════════════════════════════════
+   TYPOGRAPHY & BASE
+   ═══════════════════════════════════════════ */
+
+:root {
+  /* Brand Palette */
+  --ruby-black: #0a0a0a;
+  --ruby-dark: #1a1a1a;
+  --ruby-charcoal: #2a2a2a;
+  --ruby-warm: #f5e6d3;
+  --ruby-cream: #faf6f1;
+  --ruby-gold: #c8a86e;
+  --ruby-gold-light: #e8d5a8;
+  --ruby-amber: #d4903a;
+  --ruby-crimson: #c23b22;
+  --ruby-crimson-dark: #8b1a1a;
+  --ruby-sesame: #8b7355;
+  --ruby-poppy: #2d2d2d;
+  --ruby-everything: #4a3728;
+
+  /* Bagel Colors */
+  --bagel-crust: #c8a257;
+  --bagel-golden: #dbb668;
+  --bagel-deep: #a07830;
+  --bagel-shadow: #7a5a20;
+  --bagel-highlight: #f0d88a;
+  --bagel-cream-cheese: #f5f0e8;
+  --bagel-inner: #e8c878;
+
+  /* Typography Scale */
+  --fs-hero: clamp(4rem, 12vw, 14rem);
+  --fs-statement: clamp(2rem, 5vw, 5rem);
+  --fs-heading: clamp(1.5rem, 3vw, 3rem);
+  --fs-body: clamp(1rem, 1.5vw, 1.25rem);
+  --fs-small: clamp(0.75rem, 1vw, 0.875rem);
+  --fs-micro: clamp(0.625rem, 0.8vw, 0.75rem);
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+  --space-2xl: 12rem;
+
+  /* Animation */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Layout */
+  --max-width: 1400px;
+  --gutter: clamp(1.5rem, 4vw, 4rem);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ruby-gold) var(--ruby-black);
+}
+
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background: var(--ruby-black);
+  color: var(--ruby-cream);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: default;
+}
+
+::selection {
+  background: var(--ruby-gold);
+  color: var(--ruby-black);
+}
+
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: var(--ruby-gold);
+  margin-bottom: var(--space-sm);
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--fs-statement);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: var(--space-md);
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--ruby-gold);
+}
+
+.story-text {
+  font-size: var(--fs-body);
+  line-height: 1.8;
+  color: rgba(250, 246, 241, 0.6);
+  margin-bottom: var(--space-sm);
+}
+
+.story-text strong {
+  color: var(--ruby-cream);
+  font-weight: 500;
+}
+
+.story-highlight {
+  display: inline;
+  background: linear-gradient(to bottom, transparent 60%, rgba(200, 168, 110, 0.2) 60%);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  background: var(--ruby-gold);
+  color: var(--ruby-black);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.btn-primary:hover::after {
+  transform: translateX(100%);
+}
+.btn-primary:hover {
+  background: var(--ruby-gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(200, 168, 110, 0.3);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  background: transparent;
+  color: var(--ruby-cream);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-small);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  border: 1px solid rgba(250, 246, 241, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-ghost:hover {
+  border-color: var(--ruby-gold);
+  color: var(--ruby-gold);
+  transform: translateY(-2px);
+}
