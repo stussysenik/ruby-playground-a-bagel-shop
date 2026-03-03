@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUBY — The Last Bagel You'll Ever Need</title>
+<meta name="description" content="One location. One obsession. A billion people waiting. RUBY is not a bagel shop — it's a movement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   RUBY BAGEL — CSS FOUNDATION
+   $1B brand, $0 framework
+   ═══════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Brand Palette — warm, luxe, appetizing */
+  --ruby-black: #0a0a0a;
+  --ruby-dark: #1a1a1a;
+  --ruby-charcoal: #2a2a2a;
+  --ruby-warm: #f5e6d3;
+  --ruby-cream: #faf6f1;
+  --ruby-gold: #c8a86e;
+  --ruby-gold-light: #e8d5a8;
+  --ruby-amber: #d4903a;
+  --ruby-crimson: #c23b22;
+  --ruby-crimson-dark: #8b1a1a;
+  --ruby-sesame: #8b7355;
+  --ruby-poppy: #2d2d2d;
+  --ruby-everything: #4a3728;
+
+  /* Bagel Colors */
+  --bagel-crust: #c8a257;
+  --bagel-golden: #dbb668;
+  --bagel-deep: #a07830;
+  --bagel-shadow: #7a5a20;
+  --bagel-highlight: #f0d88a;
+  --bagel-cream-cheese: #f5f0e8;
+  --bagel-inner: #e8c878;
+
+  /* Typography Scale */
+  --fs-hero: clamp(4rem, 12vw, 14rem);
+  --fs-statement: clamp(2rem, 5vw, 5rem);
+  --fs-heading: clamp(1.5rem, 3vw, 3rem);
+  --fs-body: clamp(1rem, 1.5vw, 1.25rem);
+  --fs-small: clamp(0.75rem, 1vw, 0.875rem);
+  --fs-micro: clamp(0.625rem, 0.8vw, 0.75rem);
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+  --space-2xl: 12rem;
+
+  /* Animation */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Layout */
+  --max-width: 1400px;
+  --gutter: clamp(1.5rem, 4vw, 4rem);
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ruby-gold) var(--ruby-black);
+}
+
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background: var(--ruby-black);
+  color: var(--ruby-cream);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: default;
+}
+
+::selection {
+  background: var(--ruby-gold);
+  color: var(--ruby-black);
+}
+
+/* ═══════════════════════════════════════════
+   REACTIVE STATE — CSS Custom Properties
+   driven by JS IntersectionObserver
+   ═══════════════════════════════════════════ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ═══════════════════════════════════════════
+   GAME HUD — Always Visible
+   ═══════════════════════════════════════════ */
+
+#game-hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0.75rem var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(200, 168, 110, 0.1);
+  transform: translateY(-100%);
+  transition: transform 0.5s var(--ease-out-expo);
+}
+#game-hud.visible { transform: translateY(0); }
+
+.hud-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.hud-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--ruby-gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.hud-xp-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.xp-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: var(--ruby-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.xp-track {
+  width: 120px;
+  height: 4px;
+  background: var(--ruby-charcoal);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.xp-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--ruby-gold), var(--ruby-amber));
+  border-radius: 2px;
+  transition: width 0.6s var(--ease-out-expo);
+}
+
+.xp-level {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: var(--ruby-cream);
+  opacity: 0.6;
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.hud-streak {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: var(--ruby-amber);
+}
+
+.hud-cart {
+  position: relative;
+  background: none;
+  border: 1px solid rgba(200, 168, 110, 0.3);
+  color: var(--ruby-cream);
+  padding: 0.4rem 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.hud-cart:hover {
+  border-color: var(--ruby-gold);
+  background: rgba(200, 168, 110, 0.1);
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  background: var(--ruby-crimson);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s var(--ease-out-expo);
+}
+.cart-count.has-items {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL PROGRESS BAKE BAR
+   ═══════════════════════════════════════════ */
+
+#bake-progress {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  height: 3px;
+  background: var(--ruby-charcoal);
+}
+
+#bake-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg,
+    var(--bagel-deep),
+    var(--bagel-crust),
+    var(--bagel-golden),
+    var(--ruby-gold-light)
+  );
+  transition: width 0.1s linear;
+}
+
+/* ═══════════════════════════════════════════
+   ACHIEVEMENT TOAST
+   ═══════════════════════════════════════════ */
+
+#achievement-toast {
+  position: fixed;
+  top: 80px;
+  right: var(--gutter);
+  z-index: 1001;
+  background: var(--ruby-dark);
+  border: 1px solid var(--ruby-gold);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transform: translateX(calc(100% + 4rem));
+  transition: transform 0.6s var(--ease-out-expo);
+  max-width: 320px;
+}
+#achievement-toast.show {
+  transform: translateX(0);
+}
+
+.achievement-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.achievement-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.achievement-title {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: var(--ruby-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.achievement-desc {
+  font-size: var(--fs-small);
+  color: var(--ruby-cream);
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════
+   LIVE ORDER TICKER
+   ═══════════════════════════════════════════ */
+
+#live-ticker {
+  position: fixed;
+  bottom: 20px;
+  left: var(--gutter);
+  z-index: 998;
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(200, 168, 110, 0.15);
+  padding: 0.6rem 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s var(--ease-out-expo);
+}
+#live-ticker.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ticker-dot {
+  width: 6px;
+  height: 6px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: pulse-dot 2s ease infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.ticker-text {
+  color: rgba(250, 246, 241, 0.6);
+}
+
+.ticker-text strong {
+  color: var(--ruby-cream);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 0 — PRELOADER
+   ═══════════════════════════════════════════ */
+
+#preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--ruby-black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+#preloader.done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader-bagel {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 6px solid var(--ruby-charcoal);
+  border-top-color: var(--ruby-gold);
+  animation: spin-bagel 1s linear infinite;
+}
+
+@keyframes spin-bagel {
+  to { transform: rotate(360deg); }
+}
+
+.preloader-text {
+  margin-top: 1.5rem;
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--ruby-gold);
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 1 — HERO: THE HOOK
+   ═══════════════════════════════════════════ */
+
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-lg) var(--gutter);
+}
+
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: var(--ruby-gold);
+  margin-bottom: var(--space-md);
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-out-expo) 0.5s forwards;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--fs-hero);
+  font-weight: 900;
+  line-height: 0.85;
+  text-align: center;
+  letter-spacing: -0.03em;
+  color: var(--ruby-cream);
+  opacity: 0;
+  animation: fadeUp 1.2s var(--ease-out-expo) 0.7s forwards;
+}
+
+.hero-title .accent {
+  display: block;
+  background: linear-gradient(135deg, var(--ruby-gold), var(--ruby-amber), var(--ruby-gold-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  max-width: 500px;
+  text-align: center;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: rgba(250, 246, 241, 0.5);
+  margin-top: var(--space-md);
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-out-expo) 1s forwards;
+}
+
+.hero-cta-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: var(--space-lg);
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-out-expo) 1.3s forwards;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  background: var(--ruby-gold);
+  color: var(--ruby-black);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.btn-primary:hover::after {
+  transform: translateX(100%);
+}
+.btn-primary:hover {
+  background: var(--ruby-gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(200, 168, 110, 0.3);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  background: transparent;
+  color: var(--ruby-cream);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-small);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  border: 1px solid rgba(250, 246, 241, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-ghost:hover {
+  border-color: var(--ruby-gold);
+  color: var(--ruby-gold);
+  transform: translateY(-2px);
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-out-expo) 1.8s forwards;
+}
+
+.scroll-text {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: rgba(250, 246, 241, 0.3);
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--ruby-gold), transparent);
+  animation: scroll-pulse 2s ease infinite;
+}
+
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.3; transform: scaleY(0.6); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Floating bagel on hero */
+.hero-bagel-float {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  opacity: 0.06;
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+  50% { transform: translate(-50%, -52%) rotate(5deg); }
+}
+
+/* ═══════════════════════════════════════════
+   CSS BAGEL ILLUSTRATIONS
+   Pure CSS — no images needed
+   ═══════════════════════════════════════════ */
+
+.css-bagel {
+  position: relative;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%,
+    var(--bagel-highlight) 0%,
+    var(--bagel-golden) 20%,
+    var(--bagel-crust) 45%,
+    var(--bagel-deep) 70%,
+    var(--bagel-shadow) 100%
+  );
+  box-shadow:
+    inset 0 -8px 20px rgba(0,0,0,0.3),
+    inset 0 4px 15px rgba(240, 216, 138, 0.4),
+    0 20px 60px rgba(0,0,0,0.5),
+    0 5px 20px rgba(122, 90, 32, 0.3);
+}
+
+/* Bagel hole */
+.css-bagel::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32%;
+  height: 32%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    var(--ruby-black) 60%,
+    var(--bagel-shadow) 100%
+  );
+  box-shadow:
+    inset 0 2px 8px rgba(240, 216, 138, 0.2),
+    inset 0 -3px 10px rgba(0,0,0,0.5);
+}
+
+/* Surface texture */
+.css-bagel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 75%, rgba(0,0,0,0.15) 0%, transparent 50%);
+}
+
+/* Size variants */
+.bagel-xl { width: 400px; height: 400px; }
+.bagel-lg { width: 280px; height: 280px; }
+.bagel-md { width: 180px; height: 180px; }
+.bagel-sm { width: 120px; height: 120px; }
+.bagel-xs { width: 60px; height: 60px; }
+
+/* Flavor variants */
+.bagel-everything .seed {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.bagel-everything .seed-sesame {
+  background: var(--ruby-sesame);
+  width: 6px;
+  height: 4px;
+  border-radius: 40%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.bagel-everything .seed-poppy {
+  background: var(--ruby-poppy);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+}
+
+.bagel-everything .seed-salt {
+  background: rgba(255, 255, 255, 0.8);
+  width: 4px;
+  height: 3px;
+  border-radius: 30%;
+}
+
+/* Cream cheese schmear */
+.schmear {
+  position: absolute;
+  background: var(--bagel-cream-cheese);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.05),
+    0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 2 — THE ORIGIN STORY
+   ═══════════════════════════════════════════ */
+
+#origin {
+  padding: var(--space-2xl) var(--gutter);
+  position: relative;
+}
+
+.origin-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.origin-text {
+  max-width: 520px;
+}
+
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: var(--ruby-gold);
+  margin-bottom: var(--space-sm);
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--fs-statement);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: var(--space-md);
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--ruby-gold);
+}
+
+.story-text {
+  font-size: var(--fs-body);
+  line-height: 1.8;
+  color: rgba(250, 246, 241, 0.6);
+  margin-bottom: var(--space-sm);
+}
+
+.story-text strong {
+  color: var(--ruby-cream);
+  font-weight: 500;
+}
+
+.story-highlight {
+  display: inline;
+  background: linear-gradient(to bottom, transparent 60%, rgba(200, 168, 110, 0.2) 60%);
+}
+
+.origin-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.origin-bagel-scene {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.origin-glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(200, 168, 110, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 3 — THE NUMBERS (Social Proof)
+   ═══════════════════════════════════════════ */
+
+#numbers {
+  padding: var(--space-xl) var(--gutter);
+  border-top: 1px solid rgba(200, 168, 110, 0.1);
+  border-bottom: 1px solid rgba(200, 168, 110, 0.1);
+}
+
+.numbers-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  text-align: center;
+}
+
+.stat-item {
+  padding: var(--space-md);
+}
+
+.stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 900;
+  color: var(--ruby-gold);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-number .counter {
+  display: inline-block;
+}
+
+.stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(250, 246, 241, 0.4);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 4 — THE CRAFT (Process)
+   ═══════════════════════════════════════════ */
+
+#craft {
+  padding: var(--space-2xl) var(--gutter);
+}
+
+.craft-header {
+  max-width: var(--max-width);
+  margin: 0 auto var(--space-xl);
+  text-align: center;
+}
+
+.craft-timeline {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  position: relative;
+}
+
+.craft-timeline::before {
+  content: '';
+  position: absolute;
+  top: 60px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ruby-gold), var(--ruby-gold), transparent);
+  opacity: 0.3;
+}
+
+.craft-step {
+  text-align: center;
+  padding-top: var(--space-md);
+}
+
+.step-number {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--ruby-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-sm);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-small);
+  color: var(--ruby-gold);
+  background: var(--ruby-black);
+  position: relative;
+  z-index: 1;
+  transition: all 0.5s ease;
+}
+
+.craft-step:hover .step-number {
+  background: var(--ruby-gold);
+  color: var(--ruby-black);
+  box-shadow: 0 0 30px rgba(200, 168, 110, 0.3);
+}
+
+.step-time {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: var(--ruby-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+}
+
+.step-title {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--fs-heading);
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.step-desc {
+  font-size: var(--fs-small);
+  color: rgba(250, 246, 241, 0.5);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 5 — THE MENU (Unlockable)
+   Game Psychology: Progressive Disclosure
+   ═══════════════════════════════════════════ */
+
+#menu {
+  padding: var(--space-2xl) var(--gutter);
+  background: var(--ruby-dark);
+}
+
+.menu-header {
+  max-width: var(--max-width);
+  margin: 0 auto var(--space-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.menu-unlock-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: var(--ruby-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  animation: blink-hint 2s ease infinite;
+}
+
+@keyframes blink-hint {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.menu-grid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.menu-card {
+  background: var(--ruby-black);
+  border: 1px solid rgba(200, 168, 110, 0.1);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s var(--ease-out-expo);
+  cursor: pointer;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ruby-gold), var(--ruby-amber));
+  transform: scaleX(0);
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.menu-card:hover {
+  border-color: rgba(200, 168, 110, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.menu-card:hover::before {
+  transform: scaleX(1);
+}
+
+.menu-card-bagel {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.menu-card-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ruby-gold);
+  margin-bottom: 0.5rem;
+}
+
+.menu-card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.menu-card-desc {
+  font-size: var(--fs-small);
+  color: rgba(250, 246, 241, 0.5);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.menu-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-price {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.1rem;
+  color: var(--ruby-cream);
+}
+
+.menu-add-btn {
+  background: transparent;
+  border: 1px solid rgba(200, 168, 110, 0.3);
+  color: var(--ruby-gold);
+  padding: 0.4rem 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menu-add-btn:hover {
+  background: var(--ruby-gold);
+  color: var(--ruby-black);
+}
+
+/* Locked card state */
+.menu-card.locked {
+  opacity: 0.4;
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.menu-card.locked .lock-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 10, 0.7);
+  z-index: 2;
+  filter: none;
+  opacity: 1;
+}
+
+.lock-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.lock-text {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ruby-gold);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 6 — THE DROP (Scarcity + FOMO)
+   ═══════════════════════════════════════════ */
+
+#drop {
+  padding: var(--space-2xl) var(--gutter);
+  position: relative;
+  overflow: hidden;
+}
+
+.drop-bg-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(194, 59, 34, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.drop-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.drop-visual {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.drop-badge {
+  position: absolute;
+  top: -10px;
+  right: 20%;
+  background: var(--ruby-crimson);
+  color: var(--ruby-cream);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.3rem 0.8rem;
+  transform: rotate(5deg);
+  animation: badge-pulse 2s ease infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { transform: rotate(5deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.05); }
+}
+
+.drop-info { max-width: 520px; }
+
+.drop-timer {
+  display: flex;
+  gap: 1rem;
+  margin: var(--space-md) 0;
+}
+
+.timer-block {
+  text-align: center;
+}
+
+.timer-value {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  color: var(--ruby-crimson);
+  line-height: 1;
+}
+
+.timer-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(250, 246, 241, 0.3);
+  margin-top: 0.25rem;
+}
+
+.drop-remaining {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-small);
+  color: var(--ruby-amber);
+  margin-bottom: var(--space-md);
+}
+
+.remaining-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--ruby-charcoal);
+  border-radius: 3px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.remaining-fill {
+  height: 100%;
+  width: 23%;
+  background: linear-gradient(90deg, var(--ruby-crimson), var(--ruby-amber));
+  border-radius: 3px;
+  transition: width 1s ease;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 7 — GLOBAL REACH
+   ═══════════════════════════════════════════ */
+
+#global {
+  padding: var(--space-2xl) var(--gutter);
+  border-top: 1px solid rgba(200, 168, 110, 0.1);
+}
+
+.global-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.global-map {
+  margin: var(--space-xl) auto;
+  max-width: 900px;
+  position: relative;
+  aspect-ratio: 2 / 1;
+}
+
+/* CSS dot map */
+.map-dots {
+  display: grid;
+  grid-template-columns: repeat(40, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+}
+
+.map-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(200, 168, 110, 0.1);
+}
+
+.map-dot.active {
+  background: var(--ruby-gold);
+  box-shadow: 0 0 8px rgba(200, 168, 110, 0.4);
+  animation: dot-ping 3s ease infinite;
+}
+
+.map-dot.hub {
+  background: var(--ruby-crimson);
+  box-shadow: 0 0 15px rgba(194, 59, 34, 0.6);
+  animation: dot-ping 2s ease infinite;
+  width: 8px;
+  height: 8px;
+}
+
+@keyframes dot-ping {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.global-stats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-lg);
+}
+
+.global-stat {
+  text-align: center;
+}
+
+.global-stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 900;
+  color: var(--ruby-gold);
+}
+
+.global-stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(250, 246, 241, 0.4);
+  margin-top: 0.25rem;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 8 — THE CULT (Testimonials)
+   ═══════════════════════════════════════════ */
+
+#cult {
+  padding: var(--space-2xl) var(--gutter);
+  background: var(--ruby-dark);
+}
+
+.cult-header {
+  max-width: var(--max-width);
+  margin: 0 auto var(--space-xl);
+  text-align: center;
+}
+
+.testimonial-marquee {
+  overflow: hidden;
+  margin: 0 calc(var(--gutter) * -1);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 2rem;
+  animation: marquee 40s linear infinite;
+  width: max-content;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.testimonial-card {
+  flex-shrink: 0;
+  width: 380px;
+  background: var(--ruby-black);
+  border: 1px solid rgba(200, 168, 110, 0.1);
+  padding: 2rem;
+}
+
+.testimonial-stars {
+  color: var(--ruby-gold);
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.testimonial-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ruby-cream);
+  margin-bottom: 1.5rem;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.author-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ruby-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ruby-gold);
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-size: var(--fs-small);
+  font-weight: 500;
+}
+
+.author-handle {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  color: rgba(250, 246, 241, 0.4);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 9 — BAGEL PASSPORT (Collection Game)
+   ═══════════════════════════════════════════ */
+
+#passport {
+  padding: var(--space-2xl) var(--gutter);
+}
+
+.passport-content {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.passport-card {
+  background: var(--ruby-dark);
+  border: 2px solid var(--ruby-gold);
+  padding: 3rem;
+  margin-top: var(--space-lg);
+  position: relative;
+}
+
+.passport-card::before {
+  content: 'RUBY BAGEL PASSPORT';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ruby-black);
+  padding: 0 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--ruby-gold);
+}
+
+.stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: var(--space-md);
+}
+
+.stamp {
+  aspect-ratio: 1;
+  border: 1px dashed rgba(200, 168, 110, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: all 0.5s ease;
+  position: relative;
+}
+
+.stamp.collected {
+  border-style: solid;
+  border-color: var(--ruby-gold);
+  background: rgba(200, 168, 110, 0.05);
+}
+
+.stamp.collected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(200, 168, 110, 0.1) 0%, transparent 70%);
+}
+
+.stamp-icon { font-size: 1.5rem; }
+.stamp-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(250, 246, 241, 0.5);
+}
+
+.stamp.locked {
+  opacity: 0.3;
+}
+
+.stamp.locked .stamp-icon { filter: grayscale(1); }
+
+.passport-progress {
+  margin-top: var(--space-md);
+  text-align: left;
+}
+
+.passport-progress-label {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ruby-gold);
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.passport-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--ruby-charcoal);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.passport-fill {
+  height: 100%;
+  width: 37.5%;
+  background: linear-gradient(90deg, var(--ruby-gold), var(--ruby-amber));
+  border-radius: 4px;
+  transition: width 1s var(--ease-out-expo);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION 10 — FINAL CTA (The Close)
+   ═══════════════════════════════════════════ */
+
+#finale {
+  padding: var(--space-2xl) var(--gutter);
+  text-align: center;
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.finale-title {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--fs-statement);
+  font-weight: 900;
+  line-height: 1.1;
+  max-width: 800px;
+  margin-bottom: var(--space-md);
+}
+
+.finale-subtitle {
+  font-size: var(--fs-body);
+  color: rgba(250, 246, 241, 0.5);
+  max-width: 500px;
+  margin-bottom: var(--space-lg);
+  line-height: 1.7;
+}
+
+.finale-shopify-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 3rem;
+  background: linear-gradient(135deg, var(--ruby-gold), var(--ruby-amber));
+  color: var(--ruby-black);
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-body);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.finale-shopify-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 20px 60px rgba(200, 168, 110, 0.3),
+    0 0 0 2px rgba(200, 168, 110, 0.3);
+}
+
+.finale-shopify-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 3s ease infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+
+#footer {
+  padding: var(--space-lg) var(--gutter);
+  border-top: 1px solid rgba(200, 168, 110, 0.1);
+}
+
+.footer-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: var(--ruby-gold);
+  letter-spacing: 0.1em;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(250, 246, 241, 0.4);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer-links a:hover { color: var(--ruby-gold); }
+
+.footer-legal {
+  font-size: var(--fs-micro);
+  color: rgba(250, 246, 241, 0.2);
+  margin-top: var(--space-md);
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .origin-grid,
+  .drop-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .origin-text { max-width: none; }
+  .craft-timeline { grid-template-columns: repeat(2, 1fr); }
+  .craft-timeline::before { display: none; }
+  .menu-grid { grid-template-columns: repeat(2, 1fr); }
+  .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .menu-grid { grid-template-columns: 1fr; }
+  .craft-timeline { grid-template-columns: 1fr; }
+  .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+  .stamp-grid { grid-template-columns: repeat(3, 1fr); }
+  .global-stats { flex-direction: column; gap: var(--space-md); }
+  .footer-content { flex-direction: column; gap: 1rem; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+  .bagel-xl { width: 260px; height: 260px; }
+  .bagel-lg { width: 200px; height: 200px; }
+  .hero-cta-group { flex-direction: column; }
+  .drop-timer { justify-content: center; }
+  .menu-header { flex-direction: column; gap: 1rem; text-align: center; }
+  .hud-xp-bar { display: none; }
+}
+
+@media (max-width: 480px) {
+  .numbers-grid { grid-template-columns: 1fr; }
+  .stamp-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ═══════════════════════════════════════════
+   XP POPUP ANIMATION
+   ═══════════════════════════════════════════ */
+
+.xp-popup {
+  position: fixed;
+  z-index: 1002;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ruby-gold);
+  pointer-events: none;
+  animation: xp-float 1.5s var(--ease-out-expo) forwards;
+}
+
+@keyframes xp-float {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(1.2);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SHOPIFY BUY BUTTON CONTAINER
+   ═══════════════════════════════════════════ */
+
+#shopify-buy-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 997;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PRELOADER
+     ═══════════════════════════════════════════ -->
+<div id="preloader">
+  <div class="preloader-bagel"></div>
+  <div class="preloader-text">Warming the oven...</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     GAME HUD
+     ═══════════════════════════════════════════ -->
+<nav id="game-hud">
+  <div class="hud-left">
+    <div class="hud-logo">Ruby</div>
+    <div class="hud-xp-bar">
+      <span class="xp-label">XP</span>
+      <div class="xp-track">
+        <div class="xp-fill" id="xp-fill"></div>
+      </div>
+      <span class="xp-level" id="xp-level">Lv 1</span>
+    </div>
+  </div>
+  <div class="hud-right">
+    <div class="hud-streak" id="hud-streak">
+      <span>&#x1f525;</span>
+      <span id="streak-count">1</span>
+      <span>day streak</span>
+    </div>
+    <button class="hud-cart" id="cart-btn" onclick="openShopifyCart()">
+      Cart
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Scroll Bake Progress -->
+<div id="bake-progress">
+  <div id="bake-fill"></div>
+</div>
+
+<!-- Achievement Toast -->
+<div id="achievement-toast">
+  <div class="achievement-icon" id="ach-icon"></div>
+  <div class="achievement-text">
+    <div class="achievement-title" id="ach-title"></div>
+    <div class="achievement-desc" id="ach-desc"></div>
+  </div>
+</div>
+
+<!-- Live Order Ticker -->
+<div id="live-ticker">
+  <div class="ticker-dot"></div>
+  <div class="ticker-text" id="ticker-text">
+    <strong>Sarah M.</strong> just ordered 6 Everything Bagels &mdash; Brooklyn, NY
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1: HERO
+     ═══════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-grain"></div>
+
+  <!-- Floating background bagel -->
+  <div class="hero-bagel-float">
+    <div class="css-bagel bagel-xl"></div>
+  </div>
+
+  <div class="hero-badge">Est. 2024 &mdash; One Location &mdash; Global Obsession</div>
+
+  <h1 class="hero-title">
+    <span class="accent">Ruby</span>
+    Bagels
+  </h1>
+
+  <p class="hero-subtitle">
+    One recipe. One location. The world's most obsessed-over bagel.
+    Not because we scale. Because we don't.
+  </p>
+
+  <div class="hero-cta-group">
+    <a href="#menu" class="btn-primary">
+      Order Now &rarr;
+    </a>
+    <a href="#origin" class="btn-ghost">
+      Read Our Story
+    </a>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <span class="scroll-text">Scroll to bake</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2: THE ORIGIN STORY
+     ═══════════════════════════════════════════ -->
+<section id="origin">
+  <div class="origin-grid">
+    <div class="origin-text">
+      <div class="section-label reveal">Chapter I</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        It started with a <em>refusal</em>
+      </h2>
+      <p class="story-text reveal reveal-delay-2">
+        In 2024, in a kitchen smaller than your bathroom, we made a decision that
+        every business school would call insane: <strong>we said no to growth</strong>.
+      </p>
+      <p class="story-text reveal reveal-delay-3">
+        No franchise model. No frozen dough. No second location. Just one oven,
+        one recipe perfected over <span class="story-highlight">2,847 iterations</span>,
+        and an obsession that borders on clinical.
+      </p>
+      <p class="story-text reveal reveal-delay-4">
+        The result? A bagel so architecturally perfect, so texturally transcendent,
+        that people fly across continents for a dozen. <strong>They don't come back
+        for the bagel. They come back because nothing else compares.</strong>
+      </p>
+    </div>
+    <div class="origin-visual reveal">
+      <div class="origin-bagel-scene">
+        <div class="origin-glow"></div>
+        <div class="css-bagel bagel-lg bagel-everything" id="origin-bagel">
+          <!-- Seeds generated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3: THE NUMBERS
+     ═══════════════════════════════════════════ -->
+<section id="numbers">
+  <div class="numbers-grid">
+    <div class="stat-item reveal">
+      <div class="stat-number"><span class="counter" data-target="2847">0</span></div>
+      <div class="stat-label">Recipe Iterations</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-number"><span class="counter" data-target="1">0</span></div>
+      <div class="stat-label">Location. Forever.</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-number"><span class="counter" data-target="147">0</span></div>
+      <div class="stat-label">Countries Shipped</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="stat-number"><span class="counter" data-target="4">0</span>.8<span style="font-size:0.5em">M</span></div>
+      <div class="stat-label">Monthly Orders</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4: THE CRAFT
+     ═══════════════════════════════════════════ -->
+<section id="craft">
+  <div class="craft-header">
+    <div class="section-label reveal">Chapter II</div>
+    <h2 class="section-title reveal reveal-delay-1">The <em>36-hour</em> process</h2>
+    <p class="story-text reveal reveal-delay-2" style="max-width:600px;margin:0 auto;">
+      Every Ruby Bagel takes 36 hours from flour to your hands. There are no shortcuts.
+    </p>
+  </div>
+
+  <div class="craft-timeline">
+    <div class="craft-step reveal">
+      <div class="step-number">01</div>
+      <div class="step-time">Hour 0</div>
+      <div class="step-title">The Mix</div>
+      <div class="step-desc">
+        Canadian high-gluten flour. Barley malt syrup from a single Vermont farm.
+        Water filtered seven times.
+      </div>
+    </div>
+    <div class="craft-step reveal reveal-delay-1">
+      <div class="step-number">02</div>
+      <div class="step-time">Hour 1-24</div>
+      <div class="step-title">Cold Ferment</div>
+      <div class="step-desc">
+        24-hour cold retard at precisely 38°F.
+        This is where the flavor compounds develop. You can't rush chemistry.
+      </div>
+    </div>
+    <div class="craft-step reveal reveal-delay-2">
+      <div class="step-number">03</div>
+      <div class="step-time">Hour 30</div>
+      <div class="step-title">The Boil</div>
+      <div class="step-desc">
+        Honey-malt water, 90 seconds per side. This is the step that separates a
+        bagel from a roll with a hole.
+      </div>
+    </div>
+    <div class="craft-step reveal reveal-delay-3">
+      <div class="step-number">04</div>
+      <div class="step-time">Hour 36</div>
+      <div class="step-title">Wood-Fired</div>
+      <div class="step-desc">
+        Cherry wood. 500°F. 14 minutes. The crust shatters.
+        The interior stretches like silk. It's done.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5: THE MENU
+     ═══════════════════════════════════════════ -->
+<section id="menu">
+  <div class="menu-header">
+    <div>
+      <div class="section-label reveal">Chapter III</div>
+      <h2 class="section-title reveal reveal-delay-1">The <em>Collection</em></h2>
+    </div>
+    <div class="menu-unlock-hint reveal reveal-delay-2" id="unlock-hint">
+      &#x1f512; Scroll to unlock secret items
+    </div>
+  </div>
+
+  <div class="menu-grid" id="menu-grid">
+    <!-- Cards rendered by JS for reactivity -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6: THE DROP
+     ═══════════════════════════════════════════ -->
+<section id="drop">
+  <div class="drop-bg-glow"></div>
+  <div class="drop-content">
+    <div class="drop-visual reveal">
+      <div class="drop-badge">Limited</div>
+      <div class="css-bagel bagel-lg" style="
+        background: radial-gradient(circle at 40% 35%,
+          #f0d88a 0%,
+          #c8a257 15%,
+          #8b1a1a 40%,
+          #5a0f0f 70%,
+          #2d0808 100%
+        );
+        box-shadow:
+          inset 0 -8px 20px rgba(0,0,0,0.4),
+          inset 0 4px 15px rgba(240, 216, 138, 0.2),
+          0 20px 60px rgba(139, 26, 26, 0.4),
+          0 5px 20px rgba(90, 15, 15, 0.3),
+          0 0 80px rgba(194, 59, 34, 0.15);
+      "></div>
+    </div>
+
+    <div class="drop-info">
+      <div class="section-label reveal">Limited Edition</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        The <em>Ruby Red</em> Velvet
+      </h2>
+      <p class="story-text reveal reveal-delay-2">
+        Beetroot-infused dough. Aged gruyère. Truffle honey drizzle.
+        <strong>Only 200 made per drop.</strong> When they're gone, they're gone.
+        Next drop won't happen for 90 days.
+      </p>
+
+      <div class="drop-timer reveal reveal-delay-3">
+        <div class="timer-block">
+          <div class="timer-value" id="timer-hours">00</div>
+          <div class="timer-label">Hours</div>
+        </div>
+        <div class="timer-block">
+          <div class="timer-value" id="timer-minutes">00</div>
+          <div class="timer-label">Min</div>
+        </div>
+        <div class="timer-block">
+          <div class="timer-value" id="timer-seconds">00</div>
+          <div class="timer-label">Sec</div>
+        </div>
+      </div>
+
+      <div class="drop-remaining reveal reveal-delay-4">
+        <span id="remaining-count">47</span> / 200 remaining
+        <div class="remaining-bar">
+          <div class="remaining-fill" id="remaining-fill"></div>
+        </div>
+      </div>
+
+      <button class="btn-primary reveal reveal-delay-4" onclick="addToCart('Ruby Red Velvet', 28)" style="margin-top:1rem;">
+        Secure Yours &mdash; $28 &rarr;
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 7: GLOBAL REACH
+     ═══════════════════════════════════════════ -->
+<section id="global">
+  <div class="global-content">
+    <div class="section-label reveal">Chapter IV</div>
+    <h2 class="section-title reveal reveal-delay-1">
+      One oven.<br><em>147 countries.</em>
+    </h2>
+    <p class="story-text reveal reveal-delay-2" style="max-width:600px;margin:0 auto;">
+      We partnered with the world's best cold-chain logistics to ship our bagels
+      flash-frozen at -40°F within 24 hours of baking. You reheat in 8 minutes.
+      The result is indistinguishable from fresh out of our oven.
+    </p>
+
+    <!-- Stylized shipping dots -->
+    <div class="global-map reveal reveal-delay-3" id="global-map">
+      <!-- Generated by JS -->
+    </div>
+
+    <div class="global-stats">
+      <div class="global-stat reveal">
+        <div class="global-stat-value">$2.4B</div>
+        <div class="global-stat-label">Annual Revenue</div>
+      </div>
+      <div class="global-stat reveal reveal-delay-1">
+        <div class="global-stat-value">48hr</div>
+        <div class="global-stat-label">Max Delivery Time</div>
+      </div>
+      <div class="global-stat reveal reveal-delay-2">
+        <div class="global-stat-value">99.7%</div>
+        <div class="global-stat-label">Perfect Delivery Rate</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 8: THE CULT
+     ═══════════════════════════════════════════ -->
+<section id="cult">
+  <div class="cult-header">
+    <div class="section-label reveal">Chapter V</div>
+    <h2 class="section-title reveal reveal-delay-1">They call it a <em>cult</em></h2>
+    <p class="story-text reveal reveal-delay-2" style="max-width:500px;margin:0 auto;">
+      We prefer "community of unreasonably passionate bagel people."
+    </p>
+  </div>
+
+  <div class="testimonial-marquee">
+    <div class="marquee-track" id="marquee-track">
+      <!-- Duplicated by JS for infinite scroll -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 9: BAGEL PASSPORT
+     ═══════════════════════════════════════════ -->
+<section id="passport">
+  <div class="passport-content">
+    <div class="section-label reveal">Your Journey</div>
+    <h2 class="section-title reveal reveal-delay-1">Bagel <em>Passport</em></h2>
+    <p class="story-text reveal reveal-delay-2">
+      Collect all 8 flavors to unlock the secret 9th bagel.
+      Only 0.3% of customers have completed their passport.
+    </p>
+
+    <div class="passport-card reveal reveal-delay-3">
+      <div class="stamp-grid" id="stamp-grid">
+        <!-- Generated by JS -->
+      </div>
+
+      <div class="passport-progress">
+        <div class="passport-progress-label">
+          <span>Progress</span>
+          <span id="passport-count">3 / 8</span>
+        </div>
+        <div class="passport-bar">
+          <div class="passport-fill" id="passport-fill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 10: FINAL CTA
+     ═══════════════════════════════════════════ -->
+<section id="finale">
+  <div class="section-label reveal">The End Is The Beginning</div>
+  <h2 class="finale-title reveal reveal-delay-1">
+    Your first Ruby Bagel is a <span style="color:var(--ruby-gold)">moment</span>.<br>
+    Your second is an <span style="color:var(--ruby-gold)">addiction</span>.
+  </h2>
+  <p class="finale-subtitle reveal reveal-delay-2">
+    Join 4.8 million people in 147 countries who have made Ruby
+    their non-negotiable morning ritual.
+  </p>
+  <button class="finale-shopify-btn reveal reveal-delay-3" onclick="openShopifyCart()">
+    Start Your Obsession &rarr;
+  </button>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════ -->
+<footer id="footer">
+  <div class="footer-content">
+    <div class="footer-logo">RUBY</div>
+    <div class="footer-links">
+      <a href="#origin">Story</a>
+      <a href="#menu">Menu</a>
+      <a href="#drop">Drops</a>
+      <a href="#passport">Passport</a>
+      <a href="#global">Shipping</a>
+    </div>
+  </div>
+  <div class="footer-legal">
+    &copy; 2024&ndash;2026 Ruby Bagel Co. &mdash; One Location, Global Obsession.
+    <br>Shopify-powered commerce. All rights reserved.
+  </div>
+</footer>
+
+<!-- Shopify Buy Button SDK placeholder -->
+<div id="shopify-buy-container"></div>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT — Reactive Engine
+     ═══════════════════════════════════════════ -->
+<script>
+(() => {
+  'use strict';
+
+  /* ─── REACTIVE STATE ─── */
+  const state = new Proxy({
+    xp: 0,
+    level: 1,
+    xpToNext: 100,
+    cartItems: [],
+    cartCount: 0,
+    achievements: new Set(),
+    unlockedItems: 3,
+    totalMenuItems: 6,
+    streak: 1,
+    scrollPercent: 0,
+    sectionsVisited: new Set(),
+    passportStamps: new Set(['classic', 'everything', 'sesame']),
+  }, {
+    set(target, prop, value) {
+      target[prop] = value;
+      renderReactiveUI(prop, value);
+      return true;
+    }
+  });
+
+  /* ─── MENU DATA ─── */
+  const menuItems = [
+    {
+      id: 'classic',
+      label: 'Signature',
+      name: 'The Classic',
+      desc: 'Plain perfection. 36-hour ferment, cherry-wood fired. The one that started it all.',
+      price: 6,
+      locked: false,
+      bagelStyle: '',
+      emoji: '&#x1fad3;'
+    },
+    {
+      id: 'everything',
+      label: 'Bestseller',
+      name: 'The Everything',
+      desc: 'Sesame, poppy, garlic, onion, salt. Hand-applied. Architecturally distributed.',
+      price: 7,
+      locked: false,
+      bagelStyle: '',
+      emoji: '&#x1f36a;'
+    },
+    {
+      id: 'sesame',
+      label: 'Cult Favorite',
+      name: 'Sesame Gold',
+      desc: 'Toasted black & white sesame. Finished with Maldon salt and aged miso butter.',
+      price: 8,
+      locked: false,
+      bagelStyle: 'background: radial-gradient(circle at 40% 35%, #f0d88a 0%, #dbb668 20%, #c8a257 45%, #a07830 70%, #7a5a20 100%);',
+      emoji: '&#x1f95e;'
+    },
+    {
+      id: 'zaatar',
+      label: 'Secret Menu',
+      name: "Za'atar Sunrise",
+      desc: 'Wild thyme za\'atar blend, sumac-pickled onion, labneh schmear. Mediterranean dawn.',
+      price: 9,
+      locked: true,
+      bagelStyle: 'background: radial-gradient(circle at 40% 35%, #e8d5a8 0%, #b8943a 20%, #6b7a3a 45%, #4a5a28 70%, #3a4520 100%);',
+      emoji: '&#x2600;'
+    },
+    {
+      id: 'truffle',
+      label: 'Secret Menu',
+      name: 'Black Truffle',
+      desc: 'Shaved Périgord truffle. Gruyère. Truffle honey. The $22 bagel people fly for.',
+      price: 22,
+      locked: true,
+      bagelStyle: 'background: radial-gradient(circle at 40% 35%, #d4c4a8 0%, #8a7a6a 20%, #4a4040 45%, #2a2020 70%, #1a1010 100%);',
+      emoji: '&#x1f48e;'
+    },
+    {
+      id: 'matcha',
+      label: 'Secret Menu',
+      name: 'Matcha Ceremony',
+      desc: 'Ceremonial-grade Uji matcha dough. White chocolate. Yuzu cream cheese. Transcendent.',
+      price: 14,
+      locked: true,
+      bagelStyle: 'background: radial-gradient(circle at 40% 35%, #d5e8c0 0%, #9ab86a 20%, #6a8a3a 45%, #4a6a28 70%, #3a5020 100%);',
+      emoji: '&#x1f375;'
+    },
+  ];
+
+  /* ─── TESTIMONIALS ─── */
+  const testimonials = [
+    { quote: "I've eaten bagels in 47 countries. Ruby ruined all of them for me. Nothing else comes close.", author: "David Chang", handle: "@davidchang", avatar: "DC", stars: 5 },
+    { quote: "We tried to reverse-engineer the recipe. After 6 months and $200K in R&D, we gave up and just placed a standing order.", author: "Emily Zhang", handle: "CEO, CloudKitchen", avatar: "EZ", stars: 5 },
+    { quote: "The crust-to-crumb ratio violates the laws of physics. I don't understand how a bagel can be this structurally perfect.", author: "Marcus Reeve", handle: "@breadscientist", avatar: "MR", stars: 5 },
+    { quote: "My Ruby subscription is more important to me than my Netflix subscription. I'm not joking.", author: "Sarah Kim", handle: "@sarahk", avatar: "SK", stars: 5 },
+    { quote: "I proposed to my wife with a Ruby bagel. She said yes before I could even ask. She thought I was proposing the bagel.", author: "Tom H.", handle: "@tomhartley", avatar: "TH", stars: 5 },
+    { quote: "We serve these at our Michelin restaurant. Guests have asked us to stop making our own bread entirely.", author: "Chef Ramsay L.", handle: "@chefRL", avatar: "RL", stars: 5 },
+    { quote: "I flew from Tokyo to New York, ate one bagel, turned around and flew home. Worth every minute.", author: "Yuki Tanaka", handle: "@yukitanaka", avatar: "YT", stars: 5 },
+    { quote: "Year 2 of my Ruby subscription. I've tried canceling once. Called back 4 hours later in a cold sweat.", author: "Jamie P.", handle: "@jamiep_eats", avatar: "JP", stars: 5 },
+  ];
+
+  /* ─── PASSPORT STAMPS ─── */
+  const passportItems = [
+    { id: 'classic', icon: '&#x1fad3;', name: 'Classic' },
+    { id: 'everything', icon: '&#x1f36a;', name: 'Everything' },
+    { id: 'sesame', icon: '&#x1f95e;', name: 'Sesame' },
+    { id: 'zaatar', icon: '&#x2600;&#xfe0f;', name: "Za'atar" },
+    { id: 'truffle', icon: '&#x1f48e;', name: 'Truffle' },
+    { id: 'matcha', icon: '&#x1f375;', name: 'Matcha' },
+    { id: 'ruby-red', icon: '&#x1f534;', name: 'Ruby Red' },
+    { id: 'mystery', icon: '&#x2753;', name: '????' },
+  ];
+
+  /* ─── ORDER TICKER DATA ─── */
+  const tickerOrders = [
+    { name: 'Sarah M.', item: '6 Everything Bagels', loc: 'Brooklyn, NY' },
+    { name: 'Kenji T.', item: 'Ruby Red Velvet x2', loc: 'Tokyo, JP' },
+    { name: 'Fatima A.', item: '12 Classic Bagels', loc: 'Dubai, UAE' },
+    { name: 'Lars B.', item: 'Truffle Bagel Pack', loc: 'Stockholm, SE' },
+    { name: 'Maria C.', item: 'Sesame Gold x4', loc: 'São Paulo, BR' },
+    { name: 'James W.', item: 'Everything + Cream Cheese', loc: 'London, UK' },
+    { name: 'Priya S.', item: 'Matcha Ceremony x3', loc: 'Mumbai, IN' },
+    { name: 'Chen L.', item: '24 Mixed Bagels', loc: 'Shanghai, CN' },
+    { name: 'Emma R.', item: "Za'atar Sunrise x6", loc: 'Paris, FR' },
+    { name: 'David K.', item: 'Full Passport Pack', loc: 'Seoul, KR' },
+    { name: 'Sofia V.', item: 'Ruby Red Velvet', loc: 'Mexico City, MX' },
+    { name: 'Olga P.', item: '12 Everything Bagels', loc: 'Berlin, DE' },
+  ];
+
+  /* ─── ACHIEVEMENTS ─── */
+  const achievementDefs = {
+    firstVisit:   { icon: '&#x1f44b;', title: 'Welcome', desc: 'You found Ruby. Nothing will be the same.' },
+    storyReader:  { icon: '&#x1f4d6;', title: 'Story Time', desc: 'You read our origin. Respect.' },
+    menuExplorer: { icon: '&#x1f50d;', title: 'Menu Explorer', desc: 'You browsed the full collection.' },
+    secretMenu:   { icon: '&#x1f512;', title: 'Secret Unlocked', desc: 'You unlocked the secret menu items.' },
+    dropHunter:   { icon: '&#x23f1;', title: 'Drop Hunter', desc: 'You checked the limited edition drop.' },
+    globetrotter: { icon: '&#x1f30d;', title: 'Globetrotter', desc: 'You explored our global reach.' },
+    cultMember:   { icon: '&#x1f48e;', title: 'Cult Member', desc: 'You\'re officially one of us.' },
+    firstCart:    { icon: '&#x1f6d2;', title: 'First Cart', desc: 'Your first item. The addiction begins.' },
+    halfBaked:    { icon: '&#x1f525;', title: 'Half Baked', desc: '50% scrolled. Keep going.' },
+    fullyBaked:   { icon: '&#x2728;', title: 'Fully Baked', desc: '100% scrolled. You are now a Ruby expert.' },
+  };
+
+  /* ─── INIT ─── */
+  function init() {
+    loadStreak();
+    renderMenu();
+    renderTestimonials();
+    renderPassport();
+    renderGlobalMap();
+    generateSeeds();
+    setupIntersectionObserver();
+    setupScrollTracking();
+    startDropTimer();
+    startLiveTicker();
+
+    // Preloader
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('done');
+      document.getElementById('game-hud').classList.add('visible');
+      unlockAchievement('firstVisit');
+    }, 1500);
+  }
+
+  /* ─── REACTIVE RENDER ─── */
+  function renderReactiveUI(prop, value) {
+    switch (prop) {
+      case 'xp':
+        const percent = (state.xp % state.xpToNext) / state.xpToNext * 100;
+        document.getElementById('xp-fill').style.width = percent + '%';
+        break;
+      case 'level':
+        document.getElementById('xp-level').textContent = 'Lv ' + value;
+        break;
+      case 'cartCount':
+        const countEl = document.getElementById('cart-count');
+        countEl.textContent = value;
+        countEl.classList.toggle('has-items', value > 0);
+        break;
+      case 'scrollPercent':
+        document.getElementById('bake-fill').style.width = value + '%';
+        if (value >= 50 && !state.achievements.has('halfBaked')) unlockAchievement('halfBaked');
+        if (value >= 98 && !state.achievements.has('fullyBaked')) unlockAchievement('fullyBaked');
+        break;
+      case 'unlockedItems':
+        renderMenu();
+        break;
+    }
+  }
+
+  /* ─── XP SYSTEM ─── */
+  function addXP(amount, x, y) {
+    state.xp += amount;
+    if (state.xp >= state.level * state.xpToNext) {
+      state.level = state.level + 1;
+    }
+    // Trigger xp re-render
+    state.xp = state.xp;
+
+    // Float popup
+    if (x !== undefined && y !== undefined) {
+      const popup = document.createElement('div');
+      popup.className = 'xp-popup';
+      popup.textContent = '+' + amount + ' XP';
+      popup.style.left = x + 'px';
+      popup.style.top = y + 'px';
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 1500);
+    }
+  }
+
+  /* ─── ACHIEVEMENT SYSTEM ─── */
+  function unlockAchievement(id) {
+    if (state.achievements.has(id)) return;
+    state.achievements.add(id);
+    const def = achievementDefs[id];
+    if (!def) return;
+
+    const toast = document.getElementById('achievement-toast');
+    document.getElementById('ach-icon').innerHTML = def.icon;
+    document.getElementById('ach-title').textContent = def.title;
+    document.getElementById('ach-desc').textContent = def.desc;
+
+    toast.classList.add('show');
+    addXP(25, window.innerWidth - 200, 100);
+
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  /* ─── STREAK SYSTEM ─── */
+  function loadStreak() {
+    const lastVisit = localStorage.getItem('ruby_last_visit');
+    const streak = parseInt(localStorage.getItem('ruby_streak') || '0');
+    const today = new Date().toDateString();
+
+    if (lastVisit === today) {
+      state.streak = Math.max(streak, 1);
+    } else {
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      state.streak = lastVisit === yesterday ? streak + 1 : 1;
+    }
+
+    localStorage.setItem('ruby_last_visit', today);
+    localStorage.setItem('ruby_streak', String(state.streak));
+    document.getElementById('streak-count').textContent = state.streak;
+  }
+
+  /* ─── RENDER MENU ─── */
+  function renderMenu() {
+    const grid = document.getElementById('menu-grid');
+    grid.innerHTML = menuItems.map((item, i) => {
+      const isLocked = item.locked && i >= state.unlockedItems;
+      return `
+        <div class="menu-card ${isLocked ? 'locked' : ''}" data-id="${item.id}"
+             onclick="${isLocked ? '' : `addToCart('${item.name}', ${item.price})`}">
+          ${isLocked ? `
+            <div class="lock-overlay">
+              <div class="lock-icon">&#x1f512;</div>
+              <div class="lock-text">Keep scrolling to unlock</div>
+            </div>
+          ` : ''}
+          <div class="menu-card-bagel">
+            <div class="css-bagel bagel-sm" ${item.bagelStyle ? `style="${item.bagelStyle}"` : ''}></div>
+          </div>
+          <div class="menu-card-label">${item.label}</div>
+          <div class="menu-card-name">${item.name}</div>
+          <div class="menu-card-desc">${item.desc}</div>
+          <div class="menu-card-footer">
+            <div class="menu-price">$${item.price}</div>
+            ${!isLocked ? `<button class="menu-add-btn" onclick="event.stopPropagation();addToCart('${item.name}', ${item.price})">Add +</button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /* ─── RENDER TESTIMONIALS ─── */
+  function renderTestimonials() {
+    const track = document.getElementById('marquee-track');
+    const cards = testimonials.map(t => `
+      <div class="testimonial-card">
+        <div class="testimonial-stars">${'&#9733; '.repeat(t.stars)}</div>
+        <div class="testimonial-quote">"${t.quote}"</div>
+        <div class="testimonial-author">
+          <div class="author-avatar">${t.avatar}</div>
+          <div class="author-info">
+            <div class="author-name">${t.author}</div>
+            <div class="author-handle">${t.handle}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    // Duplicate for infinite scroll
+    track.innerHTML = cards + cards;
+  }
+
+  /* ─── RENDER PASSPORT ─── */
+  function renderPassport() {
+    const grid = document.getElementById('stamp-grid');
+    grid.innerHTML = passportItems.map(item => {
+      const collected = state.passportStamps.has(item.id);
+      return `
+        <div class="stamp ${collected ? 'collected' : 'locked'}">
+          <div class="stamp-icon">${item.icon}</div>
+          <div class="stamp-name">${item.name}</div>
+        </div>
+      `;
+    }).join('');
+
+    const count = state.passportStamps.size;
+    document.getElementById('passport-count').textContent = `${count} / 8`;
+    document.getElementById('passport-fill').style.width = `${(count / 8) * 100}%`;
+  }
+
+  /* ─── RENDER GLOBAL MAP ─── */
+  function renderGlobalMap() {
+    const map = document.getElementById('global-map');
+    // Create a minimal dot-based world map representation
+    const activeDots = new Set([
+      45, 46, 85, 86, 87, 125, 126, 127, 128, // North America
+      165, 166, 167, 205, 206, 207, 247, // South America
+      290, 291, 292, 330, 331, 332, 333, // Europe
+      335, 336, 375, 376, 377, // Middle East
+      370, 371, 410, 411, 412, 450, 451, // Africa
+      378, 379, 380, 418, 419, 420, 421, // India
+      382, 383, 422, 423, 462, 463, // East Asia
+      505, 506, 545, 546, // Oceania
+    ]);
+
+    const hubDot = 127; // NYC hub
+
+    let html = '<div class="map-dots">';
+    for (let i = 0; i < 800; i++) {
+      const isHub = i === hubDot;
+      const isActive = activeDots.has(i);
+      html += `<div class="map-dot${isActive ? ' active' : ''}${isHub ? ' hub' : ''}"></div>`;
+    }
+    html += '</div>';
+    map.innerHTML = html;
+  }
+
+  /* ─── GENERATE SEEDS ON BAGEL ─── */
+  function generateSeeds() {
+    const bagel = document.getElementById('origin-bagel');
+    if (!bagel) return;
+    const types = ['seed-sesame', 'seed-poppy', 'seed-salt'];
+    for (let i = 0; i < 40; i++) {
+      const seed = document.createElement('div');
+      seed.className = 'seed ' + types[Math.floor(Math.random() * types.length)];
+      const angle = (Math.random() * 360) * (Math.PI / 180);
+      const radius = 30 + Math.random() * 32;
+      seed.style.left = `${50 + Math.cos(angle) * radius}%`;
+      seed.style.top = `${50 + Math.sin(angle) * radius}%`;
+      seed.style.transform = `rotate(${Math.random() * 360}deg)`;
+      bagel.appendChild(seed);
+    }
+  }
+
+  /* ─── INTERSECTION OBSERVER ─── */
+  function setupIntersectionObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+
+          // Section-based achievements & unlocks
+          const section = entry.target.closest('section');
+          if (section && !state.sectionsVisited.has(section.id)) {
+            state.sectionsVisited.add(section.id);
+            const rect = entry.target.getBoundingClientRect();
+            addXP(10, rect.left + rect.width / 2, rect.top);
+
+            switch (section.id) {
+              case 'origin': unlockAchievement('storyReader'); break;
+              case 'menu': unlockAchievement('menuExplorer'); break;
+              case 'drop': unlockAchievement('dropHunter'); break;
+              case 'global': unlockAchievement('globetrotter'); break;
+              case 'cult': unlockAchievement('cultMember'); break;
+            }
+
+            // Unlock secret menu items progressively
+            if (state.sectionsVisited.size >= 4 && state.unlockedItems < 5) {
+              state.unlockedItems = 5;
+              unlockAchievement('secretMenu');
+              document.getElementById('unlock-hint').innerHTML = '&#x1f513; Secret menu unlocked!';
+            }
+            if (state.sectionsVisited.size >= 6 && state.unlockedItems < 6) {
+              state.unlockedItems = 6;
+            }
+          }
+
+          // Animate counters
+          if (entry.target.querySelector('.counter')) {
+            entry.target.querySelectorAll('.counter').forEach(animateCounter);
+          }
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }
+
+  /* ─── COUNTER ANIMATION ─── */
+  function animateCounter(el) {
+    if (el.dataset.animated) return;
+    el.dataset.animated = 'true';
+    const target = parseInt(el.dataset.target);
+    const duration = 2000;
+    const start = performance.now();
+
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      el.textContent = Math.floor(target * eased).toLocaleString();
+      if (progress < 1) requestAnimationFrame(update);
+      else el.textContent = target.toLocaleString();
+    }
+    requestAnimationFrame(update);
+  }
+
+  /* ─── SCROLL TRACKING ─── */
+  function setupScrollTracking() {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollTop = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          state.scrollPercent = Math.round((scrollTop / docHeight) * 100);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
+  /* ─── DROP COUNTDOWN TIMER ─── */
+  function startDropTimer() {
+    // Set drop to midnight + 6 hours from now (always in the future)
+    const now = new Date();
+    const dropTime = new Date(now);
+    dropTime.setHours(now.getHours() + 6, 0, 0, 0);
+    if (dropTime <= now) dropTime.setDate(dropTime.getDate() + 1);
+
+    function updateTimer() {
+      const diff = dropTime - new Date();
+      if (diff <= 0) return;
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('timer-hours').textContent = String(h).padStart(2, '0');
+      document.getElementById('timer-minutes').textContent = String(m).padStart(2, '0');
+      document.getElementById('timer-seconds').textContent = String(s).padStart(2, '0');
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+
+    // Slowly decrease remaining count
+    setInterval(() => {
+      const el = document.getElementById('remaining-count');
+      let count = parseInt(el.textContent);
+      if (count > 12) {
+        count -= 1;
+        el.textContent = count;
+        document.getElementById('remaining-fill').style.width = ((count / 200) * 100) + '%';
+      }
+    }, 15000);
+  }
+
+  /* ─── LIVE ORDER TICKER ─── */
+  function startLiveTicker() {
+    const ticker = document.getElementById('live-ticker');
+    const textEl = document.getElementById('ticker-text');
+    let index = 0;
+
+    function showOrder() {
+      const order = tickerOrders[index % tickerOrders.length];
+      textEl.innerHTML = `<strong>${order.name}</strong> just ordered ${order.item} — ${order.loc}`;
+      ticker.classList.add('show');
+
+      setTimeout(() => {
+        ticker.classList.remove('show');
+      }, 4000);
+
+      index++;
+    }
+
+    // First show after 5s, then every 8s
+    setTimeout(() => {
+      showOrder();
+      setInterval(showOrder, 8000);
+    }, 5000);
+  }
+
+  /* ─── CART / SHOPIFY ─── */
+  window.addToCart = function(name, price) {
+    state.cartItems.push({ name, price });
+    state.cartCount = state.cartItems.length;
+
+    if (!state.achievements.has('firstCart')) {
+      unlockAchievement('firstCart');
+    }
+    addXP(15, window.innerWidth / 2, window.innerHeight / 2);
+  };
+
+  window.openShopifyCart = function() {
+    // Shopify Buy Button integration point
+    // Replace YOUR_SHOPIFY_DOMAIN and STOREFRONT_ACCESS_TOKEN
+    if (window.ShopifyBuy && window.shopifyClient) {
+      window.shopifyUI.openCart();
+    } else {
+      // Fallback: show cart summary
+      if (state.cartItems.length === 0) {
+        alert('Your cart is empty. Add some bagels!');
+      } else {
+        const total = state.cartItems.reduce((sum, item) => sum + item.price, 0);
+        const summary = state.cartItems.map(i => `${i.name} — $${i.price}`).join('\n');
+        alert(`🛒 Cart (${state.cartItems.length} items)\n\n${summary}\n\nTotal: $${total}\n\n→ Connect Shopify to enable checkout`);
+      }
+    }
+  };
+
+  /* ─── SHOPIFY BUY BUTTON SDK INTEGRATION ─── */
+  // Uncomment and configure with your Shopify store:
+  /*
+  (function() {
+    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = scriptURL;
+    script.onload = function() {
+      window.shopifyClient = ShopifyBuy.buildClient({
+        domain: 'YOUR-STORE.myshopify.com',
+        storefrontAccessToken: 'YOUR_STOREFRONT_ACCESS_TOKEN',
+      });
+      window.shopifyUI = ShopifyBuy.UI.init(shopifyClient);
+
+      // Create cart component
+      shopifyUI.createComponent('cart', {
+        node: document.getElementById('shopify-buy-container'),
+        options: {
+          cart: {
+            styles: {
+              button: { 'background-color': '#c8a86e', 'color': '#0a0a0a' },
+            },
+            text: { total: 'Subtotal', button: 'Checkout' },
+            popup: false,
+          }
+        }
+      });
+
+      // Create buy buttons for each product
+      // shopifyUI.createComponent('product', {
+      //   id: 'YOUR_PRODUCT_ID',
+      //   ...
+      // });
+    };
+    document.head.appendChild(script);
+  })();
+  */
+
+  /* ─── BOOT ─── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
